@@ -44,6 +44,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     GOBIN=/out GO111MODULE=on go install "github.com/josephspurrier/goversioninfo/cmd/goversioninfo@${GOVERSIONINFO_VERSION}"
 
 FROM build-base-${BASE_VARIANT} AS gotestsum
+ENV GOPROXY=https://mirrors.aliyun.com/goproxy/
 ARG GOTESTSUM_VERSION
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg/mod \
