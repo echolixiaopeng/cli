@@ -11,6 +11,7 @@ FROM --platform=$BUILDPLATFORM tonistiigi/xx:${XX_VERSION} AS xx
 
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-${BASE_VARIANT} AS build-base-alpine
 COPY --from=xx / /
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache bash clang lld llvm file git
 WORKDIR /go/src/github.com/docker/cli
 
@@ -36,6 +37,7 @@ RUN xx-apt-get install --no-install-recommends -y libc6-dev libgcc-10-dev
 RUN [ "$TARGETPLATFORM" != "darwin/amd64" ] || ln -sfnT /bin/true /usr/bin/llvm-strip
 
 FROM build-base-${BASE_VARIANT} AS goversioninfo
+ENV GOPROXY=https://mirrors.aliyun.com/goproxy/
 ARG GOVERSIONINFO_VERSION
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg/mod \
